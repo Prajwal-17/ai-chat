@@ -19,6 +19,9 @@ export const Chat = () => {
         }),
       });
       // const data = await response.json();
+      console.log(setAnswer);
+      console.log(loading);
+      // @ts-ignore
       const reader = response.body
         .pipeThrough(new TextDecoderStream())
         .getReader();

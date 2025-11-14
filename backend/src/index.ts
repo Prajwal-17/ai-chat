@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:4173"],
     credentials: true,
   }),
 );
@@ -35,32 +35,27 @@ app.get("/", (req, res) => {
   res.json({ status: "success" }).status(200);
 });
 
-app.get("/events-demo", async (req, res) => {
+app.post("/events-demo", async (req, res) => {
   try {
-    console.log("in events-demo");
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Cache-Control", "no-cache");
     res.set("Content-Type", "text/event-stream");
     res.flushHeaders();
 
-    let count = 0;
+    let count = 1;
 
     const interval = setInterval(() => {
       const stock1Rate = Math.floor(Math.random() * 100000);
       const stock2Rate = Math.floor(Math.random() * 60000);
-      res.write(`data: ${JSON.stringify({ stock1Rate, stock2Rate })}\n\n`);
+      res.write(`data: ${JSON.stringify({ stock1Rate })}\n\n`);
       count++;
 
       if (count > 5) {
         clearInterval(interval);
+        res.write("event: end\ndata: finished\n\n");
         res.end();
       }
     }, 2000);
-
-    // res.on("close", () => {
-    //   clearInterval(interval);
-    //   res.end();
-    // });
   } catch (error) {
     console.log(error);
   }
