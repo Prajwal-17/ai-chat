@@ -43,6 +43,7 @@ export const Chat = () => {
       console.log(error);
     }
   };
+
   return (
     <>
       <div>
@@ -64,7 +65,7 @@ export const Chat = () => {
               Send
             </button>
             {/*{loading && <div>Loading ...</div>}*/}
-            <Markdown>{answer}</Markdown>
+            <Markdown>{content}</Markdown>
           </div>
         </div>
       </div>

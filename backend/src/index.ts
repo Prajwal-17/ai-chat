@@ -42,6 +42,9 @@ app.post("/events-demo", async (req, res) => {
     res.set("Content-Type", "text/event-stream");
     res.flushHeaders();
 
+    const responseFile = "../example.txt";
+    
+
     let count = 1;
 
     const interval = setInterval(() => {
@@ -62,29 +65,39 @@ app.post("/events-demo", async (req, res) => {
 });
 
 app.post("/api/chat", async (req, res) => {
-  console.log("get req", req.route.path);
   res.setHeader("Content-type", "text/event-stream");
   res.setHeader("Cache-control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   try {
     const { prompt } = req.body;
 
+    // list models
+    // const models = await ai.models.list();
+    // console.log(models.page);
+
     const response = await ai.models.generateContentStream({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
-    console.log(response);
-
+    // console.log(response);
     for await (const chunk of response) {
-      const text = chunk.text;
-      if (text) {
-        res.write(`data:${JSON.stringify({ text })}\n\n`);
-      }
-
-      // console.log(chunk.text());
+      console.log(chunk.text);
+      // console.log(
+      // chunk.text || chunk.candidates[0]?.content?.parts[0]?.text || "",
+      // );
     }
 
-    res.write(`data: [DONE]\n\n`);
+    // for await (const chunk of response) {
+    //   const text = chunk.text;
+    //   if (text) {
+    //     res.write(`data:${JSON.stringify({ text })}\n\n`);
+    //   }
+
+    //   // console.log(chunk.text());
+    // }
+
+    // res.write(`data: [DONE]\n\n`);
+    // res.end();
     res.end();
 
     // res.json({
