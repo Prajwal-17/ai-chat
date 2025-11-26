@@ -7,11 +7,11 @@ export const Response = () => {
     async function fetchData() {
       try {
         const response = await fetch("http://localhost:3000/response-demo", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({ prompt: "Hi hello" }),
+          method: "GET",
+          // headers: {
+          //   "Content-type": "application/json",
+          // },
+          // body: JSON.stringify({ prompt: "Hi hello" }),
         });
 
         if (!response.body) return;
@@ -37,6 +37,7 @@ export const Response = () => {
             const json = line.replace("data:", "").trim();
             try {
               const parsed = JSON.parse(json);
+              console.log(parsed);
               setData((prev) => [...prev, parsed]);
             } catch (error) {
               console.log(error);
@@ -57,9 +58,9 @@ export const Response = () => {
 
   return (
     <>
-      <div>Demo</div>
+      <div>Response Streaming Demo</div>
       {data.map((item, index) => (
-        <div key={index}>{item.stock1Rate}</div>
+        <span key={index}>{item.content}</span>
       ))}
     </>
   );

@@ -11,7 +11,10 @@ export const Home = () => {
               Chat
             </Link>
             <Link to="/demo" className="text-blue-500 underline">
-              Demo
+              Stream Demo
+            </Link>
+            <Link to="/response-demo" className="text-blue-500 underline">
+              Response Stream Demo
             </Link>
           </div>
         </div>

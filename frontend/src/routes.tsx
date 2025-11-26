@@ -3,6 +3,7 @@ import App from "./App";
 import { Chat } from "./pages/Chat";
 import { Demo } from "./pages/Demo";
 import { Home } from "./pages/Home";
+import { Response } from "./pages/Response";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: "/chat",
         element: <Chat />,
+      },
+      {
+        path: "/response-demo",
+        element: <Response />,
       },
     ],
   },

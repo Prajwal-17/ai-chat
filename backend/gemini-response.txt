@@ -1,0 +1,175 @@
+POST /api/chat
+{
+  parts: [
+    {
+      text: 'In physics, **force** is fundamentally a **push or a pull** that can cause an object to change its state of motion or its shape.\n' +
+        '\n' +
+        "Here's a breakdown of what that means:\n" +
+        '\n' +
+        '1.  **A Push or a Pull'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ':** This is the most intuitive way to think about force. When you push a shopping cart, or pull open a door, you are applying a force.\n' +
+        '\n' +
+        '2.  **Changes State of Motion:** This is the primary effect of an'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ` **unbalanced force**. An object's "state of motion" refers to whether it is:\n` +
+        '    *   **At rest:** A force can make it start moving.\n' +
+        '    *   **Moving:** A force can make it:\n' +
+        '        '
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: '*   **Speed up** (accelerate)\n' +
+        '        *   **Slow down** (decelerate)\n' +
+        '        *   **Change direction**\n' +
+        '\n' +
+        '    *If all forces acting on an object are balanced, its state of motion will'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ' not change (it will stay at rest, or continue moving at a constant speed in a straight line).*\n' +
+        '\n' +
+        '3.  **Changes Shape:** Forces can also deform objects. For example, when you squeeze a sponge, stretch a rubber band,'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ' or compress a spring, you are applying a force that changes its shape.\n' +
+        '\n' +
+        '---\n' +
+        '\n' +
+        '**Key Characteristics of Force:**\n' +
+        '\n' +
+        '*   **Vector Quantity:** Force has both **magnitude** (how strong it is, e.g., '
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: "10 Newtons) and **direction** (e.g., to the left, upwards). You can't fully describe a force without knowing both.\n" +
+        '*   **Interaction:** Forces always occur in pairs due to an interaction between'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ` two (or more) objects. You can't just have "a force" existing in isolation; something applies the force, and something receives it. (This relates to Newton's Third Law: "For every action, there is an`
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ' equal and opposite reaction.")\n' +
+        '*   **Unit of Measurement:** The standard unit for force in the International System of Units (SI) is the **Newton (N)**. One Newton is roughly the force required to accelerate a 1-kil'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: "ogram mass at 1 meter per second squared. (It's about the weight of a small apple).\n" +
+        '\n' +
+        '---\n' +
+        '\n' +
+        '**Common Types of Forces:**\n' +
+        '\n' +
+        'Forces can generally be categorized into two main types:\n' +
+        '\n' +
+        '1.  **Contact'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ' Forces:** These occur when objects are physically touching each other.\n' +
+        '    *   **Applied Force:** A direct push or pull (like pushing a box).\n' +
+        '    *   **Friction:** A force that opposes motion between surfaces in contact.\n'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: '    *   **Normal Force:** The support force exerted by a surface perpendicular to the object resting on it (e.g., a table supporting a book).\n' +
+        '    *   **Tension:** The pulling force transmitted axially by means of a string'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: ', cable, chain, or similar one-dimensional continuous object.\n' +
+        '    *   **Air Resistance:** Friction-like force exerted by air on moving objects.\n' +
+        '\n' +
+        '2.  **Non-Contact Forces (or "Action-at-'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: 'a-Distance" Forces):** These forces act between objects that are not physically touching.\n' +
+        '    *   **Gravity:** The attractive force between any two objects with mass (e.g., Earth pulling you downwards).\n' +
+        '    *   **Elect'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: 'romagnetic Force:** The force between electrically charged particles or magnetic poles (e.g., magnets attracting or repelling).\n' +
+        '    *   **Strong Nuclear Force:** The force that holds the nucleus of an atom together.\n' +
+        '    *   **'
+    }
+  ],
+  role: 'model'
+}
+{
+  parts: [
+    {
+      text: 'Weak Nuclear Force:** Involved in certain types of radioactive decay.\n' +
+        '\n' +
+        '---\n' +
+        '\n' +
+        "**In simple terms:** Force is what makes things start moving, stop moving, speed up, slow down, change direction, or change shape. It's the fundamental"
+    }
+  ],
+  role: 'model'
+}
+{ parts: [ { text: ' cause of changes in motion.' } ], role: 'model' }

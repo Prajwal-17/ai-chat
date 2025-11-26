@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import fs from "fs";
 
 dotenv.config();
 const app = express();
@@ -41,9 +42,6 @@ app.post("/events-demo", async (req, res) => {
     res.set("Cache-Control", "no-cache");
     res.set("Content-Type", "text/event-stream");
     res.flushHeaders();
-
-    const responseFile = "../example.txt";
-    
 
     let count = 1;
 
@@ -107,6 +105,48 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400);
+  }
+});
+
+app.get("/response-demo", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const fileStream = fs.createReadStream("./example.txt", {
+    encoding: "utf8",
+    highWaterMark: 1024,
+  });
+
+  let buffer = "";
+
+  try {
+    // here only the "highWaterMark" size of chunk is iterated
+    for await (const chunk of fileStream) {
+      buffer += chunk;
+
+      const parts = buffer.split(/(\s+)/);
+
+      buffer = parts.pop();
+
+      for (const part of parts) {
+        res.write(`data: ${JSON.stringify({ content: part })}\n\n`);
+        // fake delay
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+
+    // Flush any remaining text in the buffer after the file ends
+    if (buffer) {
+      res.write(`data: ${JSON.stringify({ content: buffer })}\n\n`);
+    }
+
+    res.write("data: [DONE]\n\n");
+    res.end();
+  } catch (error) {
+    console.error("Stream error:", error);
+    res.write(`data: ${JSON.stringify({ error: "Failed to read file" })}\n\n`);
+    res.end();
   }
 });
 
