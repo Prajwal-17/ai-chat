@@ -10,7 +10,11 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:4173"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      "http://localhost:3000",
+    ],
     credentials: true,
   }),
 );
@@ -71,39 +75,22 @@ app.post("/api/chat", async (req, res) => {
 
     // list models
     // const models = await ai.models.list();
-    // console.log(models.page);
-
     const response = await ai.models.generateContentStream({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
-    // console.log(response);
+
     for await (const chunk of response) {
-      console.log(chunk.text);
-      // console.log(
-      // chunk.text || chunk.candidates[0]?.content?.parts[0]?.text || "",
-      // );
+      const text = chunk.text;
+      if (text) {
+        res.write(`data:${JSON.stringify({ text })}\n\n`);
+      }
     }
 
-    // for await (const chunk of response) {
-    //   const text = chunk.text;
-    //   if (text) {
-    //     res.write(`data:${JSON.stringify({ text })}\n\n`);
-    //   }
-
-    //   // console.log(chunk.text());
-    // }
-
-    // res.write(`data: [DONE]\n\n`);
-    // res.end();
+    res.write(`data: [DONE]\n\n`);
     res.end();
-
-    // res.json({
-    //   status: "success",
-    //   // data: response.text,
-    // });
   } catch (error) {
-    console.log(error);
+    console.log((error as Error).message);
     res.status(400);
   }
 });
@@ -118,7 +105,7 @@ app.get("/response-demo", async (req, res) => {
     highWaterMark: 1024,
   });
 
-  let buffer = "";
+  let buffer: any = "";
 
   try {
     // here only the "highWaterMark" size of chunk is iterated
