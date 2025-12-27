@@ -87,7 +87,7 @@ app.post("/api/chat", async (req, res) => {
       }
     }
 
-    res.write(`data: [DONE]\n\n`);
+    res.write(`data:[DONE]\n\n`);
     res.end();
   } catch (error) {
     console.log((error as Error).message);

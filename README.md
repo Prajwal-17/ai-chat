@@ -19,3 +19,11 @@
   - youtube live chat
   - showing progress
   - logging
+
+---
+
+<img alt="uint8Array" src="./attachments/uint8Array.png" width="600" />
+
+<img alt="splitresult" src="./attachments/SplitResult.png" width="600" />
+- raw binary byte level data
+- Those numbers you're seeing (97, 116, 101, 120, 116, 58, 32, 123, ...) are ASCII/UTF-8 byte values of the incoming text chunks.

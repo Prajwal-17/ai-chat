@@ -1,48 +1,84 @@
-import { useState } from "react";
-import Markdown from "react-markdown";
+import { useEffect, useState } from "react";
 
 export const Chat = () => {
   const [promptInput, setPromptInput] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [messages, setMessages] = useState<string>();
+
   const handleSendMsg = async () => {
     try {
-      setLoading(true);
       const response = await fetch("http://localhost:3000/api/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+          "Content-type": "application/json",
         },
-        body: JSON.stringify({
-          prompt: promptInput,
-        }),
+        body: JSON.stringify({ prompt: promptInput }),
       });
-      // const data = await response.json();
-      console.log(setAnswer);
-      console.log(loading);
-      // @ts-ignore
-      const reader = response.body
-        .pipeThrough(new TextDecoderStream())
-        .getReader();
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        console.log("Received", value);
-      }
-      const eventSource = new EventSource("http://localhost:3000/api/chat");
 
-      // setLoading(false);
-      // console.log(data.data);
-      // setAnswer(data.data);
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      if (!response.body) {
+        throw new Error("Response has no body");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      let aiResponse = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        // here value is the utf values
+
+        if (done) break;
+        // console.log(value);
+
+        // decode returns string
+        const chunk = decoder.decode(value, { stream: true });
+        // console.log(chunk);
+
+        // split returns array of lines
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          const jsonStr = line.replace("data:", "");
+
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            if (jsonStr === "") {
+              continue;
+            }
+            const data = JSON.parse(jsonStr);
+            // console.log(data);
+
+            const newText = data.text;
+
+            aiResponse += newText;
+            // setMessages((prev) => [...prev, newText]);
+
+            // update in state
+            // render in Ui
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        setMessages(aiResponse);
+      }
+
       // console.log(data);
-      eventSource.onmessage = (event) => {
-        console.log(event.data);
-      };
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
 
   return (
     <>
@@ -64,8 +100,7 @@ export const Chat = () => {
             >
               Send
             </button>
-            {/*{loading && <div>Loading ...</div>}*/}
-            <Markdown>{content}</Markdown>
+            {/*<Markdown>{messages}</Markdown>*/}
           </div>
         </div>
       </div>
