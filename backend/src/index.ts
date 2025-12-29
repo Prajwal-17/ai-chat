@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { type Request, type Response } from "express";
 import fs from "fs";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "./lib/prisma.js";
 
 dotenv.config();
 const app = express();
@@ -184,6 +184,37 @@ app.post("/api/raw/chat", async (req: Request, res: Response) => {
   } catch (error) {
     console.log((error as Error).message);
     res.status(400);
+  }
+});
+
+app.post("/api/openrouter/chat", async (req: Request, res: Response) => {
+  try {
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_KEY}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "x-ai/grok-4.1-fast",
+          messages: [
+            {
+              role: "user",
+              content: "What is the meaning of life",
+            },
+          ],
+          stream: true,
+        }),
+      },
+    );
+
+    console.log(response);
+    // read the stream and serve to FE
+  } catch (error) {
+    console.log(error);
+    return res.status(500);
   }
 });
 
