@@ -1,8 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
+import express, { type Request, type Response } from "express";
 import fs from "fs";
+import { prisma } from "../lib/prisma.js";
 
 dotenv.config();
 const app = express();
@@ -36,11 +37,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.json({ status: "success" }).status(200);
 });
 
-app.post("/events-demo", async (req, res) => {
+// sse-demo
+app.post("/events-demo", async (req: Request, res: Response) => {
   try {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Cache-Control", "no-cache");
@@ -66,15 +68,94 @@ app.post("/events-demo", async (req, res) => {
   }
 });
 
-app.post("/api/chat", async (req, res) => {
+// get chat and its messages
+app.get("/api/chat/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    if (!id) {
+      return res.json({ msg: "Something went wrong" }).status(400);
+    }
+
+    const chat = await prisma.chats.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        messages: true,
+      },
+    });
+
+    return res.json({ data: chat }).status(200);
+  } catch (error) {
+    console.log(error);
+    return res.status(500);
+  }
+});
+
+// raw apis - gemini
+app.post("/api/raw/chat", async (req: Request, res: Response) => {
   res.setHeader("Content-type", "text/event-stream");
   res.setHeader("Cache-control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   try {
-    const { prompt } = req.body;
+    const { id, prompt } = req.body;
 
     // list models
     // const models = await ai.models.list();
+
+    const existingChat = await prisma.chats.findFirst({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!existingChat?.title) {
+      const titleResponse = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction:
+            "Generate a concise title for the user given prompt. Provide only the title for this prompt not any explanation or qutotes",
+        },
+      });
+
+      if (!titleResponse.text) {
+        return res.json({ msg: "Title could not be generated" }).status(500);
+      }
+
+      const chat = await prisma.chats.create({
+        data: {
+          title: titleResponse.text,
+        },
+      });
+    }
+
+    const latestMsgIndex = await prisma.messages.findFirst({
+      where: {
+        id: id,
+      },
+      orderBy: {
+        msgIndex: "desc",
+      },
+      select: { msgIndex: true },
+    });
+
+    const newMsgIndex = latestMsgIndex?.msgIndex
+      ? latestMsgIndex?.msgIndex + 1
+      : 1;
+
+    const newUserMsg = await prisma.messages.create({
+      data: {
+        role: "USER",
+        msgIndex: newMsgIndex,
+        chatId: "8c12caea-938c-4b92-a2d0-02d125e2c698",
+        content: prompt,
+      },
+    });
+
+    let aiResponse = "";
+
     const response = await ai.models.generateContentStream({
       model: "gemini-2.5-flash",
       contents: prompt,
@@ -82,10 +163,21 @@ app.post("/api/chat", async (req, res) => {
 
     for await (const chunk of response) {
       const text = chunk.text;
+      aiResponse += text;
       if (text) {
+        // res.write(`event: message\n`);
         res.write(`data:${JSON.stringify({ text })}\n\n`);
       }
     }
+
+    const newMessage = await prisma.messages.create({
+      data: {
+        chatId: "8c12caea-938c-4b92-a2d0-02d125e2c698",
+        role: "AI",
+        msgIndex: newMsgIndex + 1,
+        content: aiResponse,
+      },
+    });
 
     res.write(`data:[DONE]\n\n`);
     res.end();
@@ -95,7 +187,7 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-app.get("/response-demo", async (req, res) => {
+app.get("/response-demo", async (req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");

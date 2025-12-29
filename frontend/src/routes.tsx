@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import { Chat } from "./pages/Chat";
+import { AiSDK } from "./pages/AiSDK";
 import { Demo } from "./pages/Demo";
 import { Home } from "./pages/Home";
+import { OpenRouterChat } from "./pages/OpenRouterChat";
+import { RawChat } from "./pages/RawChat";
 import { Response } from "./pages/Response";
 
 export const router = createBrowserRouter([
@@ -19,12 +21,20 @@ export const router = createBrowserRouter([
         element: <Demo />,
       },
       {
-        path: "/chat",
-        element: <Chat />,
-      },
-      {
         path: "/response-demo",
         element: <Response />,
+      },
+      {
+        path: "/raw/chat",
+        element: <RawChat />,
+      },
+      {
+        path: "/openrouter/chat",
+        element: <OpenRouterChat />,
+      },
+      {
+        path: "/aisdk/chat",
+        element: <AiSDK />,
       },
     ],
   },
